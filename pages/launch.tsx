@@ -65,13 +65,12 @@ const Patch = styled(Image)`
 // const Launch = ( { launches } : { launches: ILaunch[] }) => {
   const Launches = ({ launches } : any ) => {
 
-  const formatData = (launcgesDate) => {
+  const formatData = (launcgesDate: string) : string => {
     const date = new Date(launcgesDate).toLocaleString();
     return date.substr(0, date.length - 3);
   } 
 
-  const checkLaunchStatus = (status: boolean, date) => {
-    console.log(typeof date)
+  const checkLaunchStatus = (status: boolean, date: string) : string => {
       const today = new Date();
       const launchDate = new Date(date);
       if (launchDate <= today) {

@@ -1,37 +1,32 @@
 import Head from 'next/head'
 import styled from 'styled-components';
-import Launch from '../components/launch';
 import MainContainer from '../components/MainContainer';
-// import GlobalStyle from '../components/GlobalStyle';
 import React, { Fragment } from 'react';
 
 import { createGlobalStyle } from "styled-components";
-
 
 const GlobalStyle = createGlobalStyle`
 body {
     margin: 0;
     padding: 0;
-    background: darkgray;
+    background: #0e0d0d;
     font-family: Open-Sans, Helvetica, Sans-Serif;
+    
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 `;
- 
-const Heading = styled.h1`
-  color: green;
-  font-size: 40px;
-  text-align: center;
-`;
+
 
  const App = () => {
   return (
     <Fragment>
       <GlobalStyle />
-
       <MainContainer>
-        <Heading>SpaceX launches</Heading>
-        <p>This app shows all launches by SpaceX company.</p>
-        {/* <Launch /> */}
         <Head>
           <title>SpaceX launches</title>
           <meta name="description" content="This is an application that shows a list of all SpaceX launches." />
