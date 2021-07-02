@@ -12,7 +12,7 @@ const GlobalStyle = createGlobalStyle`
 body {
     margin: 0;
     padding: 0;
-    background: red;
+    background: darkgray;
     font-family: Open-Sans, Helvetica, Sans-Serif;
   }
 `;
@@ -30,6 +30,7 @@ const Heading = styled.h1`
 
       <MainContainer>
         <Heading>SpaceX launches</Heading>
+        <p>This app shows all launches by SpaceX company.</p>
         {/* <Launch /> */}
         <Head>
           <title>SpaceX launches</title>

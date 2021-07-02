@@ -10,6 +10,7 @@ const GET_ALL_LAUNCHES = 'https://api.spacexdata.com/v4/launches';
 const Name = styled.a`
     font-size: 28px;
     text-decoration: none;
+    text-transform: uppercase;
 `;
 
 const Description = styled.span`
@@ -18,8 +19,13 @@ const Description = styled.span`
 `;
 
 const Success = styled.span`
-font-size: 20px;
-  color: ${(props) => (props.success ? "#1db262" : "#d31647")};;
+  font-size: 20px;
+  color: ${(props) => (props.success ? "#1db262" : "#d31647")};
+  text-transform: uppercase;
+  border: ${(props) => (props.success ? "#1db262" : "#d31647")} 2px solid;
+  padding: 0.3rem 1rem;
+  width: wit-content;
+ 
 `;
 
 const LaunchDate = styled.span`
@@ -59,6 +65,22 @@ const Patch = styled(Image)`
 // const Launch = ( { launches } : { launches: ILaunch[] }) => {
   const Launches = ({ launches } : any ) => {
 
+  const formatData = (launcgesDate) => {
+    const date = new Date(launcgesDate).toLocaleString();
+    return date.substr(0, date.length - 3);
+  } 
+
+  const checkLaunchStatus = (status: boolean, date) => {
+    console.log(typeof date)
+      const today = new Date();
+      const launchDate = new Date(date);
+      if (launchDate <= today) {
+        return status ? 'success' : 'fail';
+      } else {
+        return `Planning on ${launchDate.toLocaleString()}`
+      }
+  }
+
   if (!launches) return <h1>Loading...</h1>
 
   return (
@@ -75,9 +97,9 @@ const Patch = styled(Image)`
                         <Link href={`/launches/${name}`}>
                             <Name>{name}</Name>
                         </Link>
-                        <LaunchDate>Date: {date_utc}</LaunchDate>
-                        <Success success={success}>Status: {success ? 'success' : 'fail'}</Success>
-                        <Description>Mission description: {details} </Description>
+                        <LaunchDate>Date: {formatData(date_utc)}</LaunchDate>
+                        <Success success={success}>{checkLaunchStatus(success, date_utc)}</Success>
+                        <Description>Mission description: {details || 'This is haven`t some information'} </Description>
                        
                     </TextContent>
                 </Launch>
