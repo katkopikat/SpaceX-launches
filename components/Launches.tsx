@@ -1,31 +1,29 @@
 
 import styled from 'styled-components';
 import Link from 'next/dist/client/link';
+// import Main from 'next/document';
 import Image from 'next/image';
-//import { InferGetStaticPropsType } from 'next'
-import { GetStaticProps } from 'next'
 
-const GET_ALL_LAUNCHES = 'https://api.spacexdata.com/v4/launches';
+const GET_ALL_LAUNCHES: string = 'https://api.spacexdata.com/v4/launches';
 
 const Name = styled.a`
-    font-size: 28px;
+    font-size: 2.5rem;
     text-decoration: none;
     text-transform: uppercase;
 `;
 
 const Description = styled.span`
-  color: black;
-  font-size: 20px;
+  font-size: 1.2rem;
 `;
 
 const Status = styled.span`
-  font-size: 20px;
+  font-size: 1.2rem;
   color: ${(props) => (props.success ? "#1db262" : "#d31647")};
   text-transform: uppercase;
   border: ${(props) => (props.success ? "#1db262" : "#d31647")} 2px solid;
   padding: 0.3rem 1rem;
+  margin: 1rem 0;
   width: wit-content;
- 
 `;
 
 const LaunchDate = styled.span`
@@ -35,22 +33,41 @@ const LaunchDate = styled.span`
 const TextContent = styled.div`
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     max-width: 60vw;
+    margin: 2rem;
+
 `;
 
 const Launch = styled.li`
     display: flex;
     min-height: 300px;
+    margin-left: 3rem;
+    margin-bottom: 2rem;
+    background-color: #101010;
+    border-top: #1c1a1a 1px solid;
+    border-left: #161616 1px solid;
 `;
 
+// const Patch = styled(Image)`
+//   height: 300px;
+// `;
 
-const Patch = styled(Image)`
-  height: 300px;
-  width: 300px;
-  object-fit: contain;
+const Patch = styled.div`
+  height: 250px;
+  width: 250px;
+  margin-left: 2rem;
+  background-image: url(${(props) => (props.url)});
+  background-size: contain;
+  background-size: 220px auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  // padding: 1rem;
 `;
 
-
+const Main = styled.main`
+  margin: 0 auto;
+`;
 
 // interface ILaunch {
 //     name: string;
@@ -60,10 +77,8 @@ const Patch = styled(Image)`
 //     img: string;
 // }
 
-
-
 // const Launch = ( { launches } : { launches: ILaunch[] }) => {
-  const Launches = ({ launches } : any ) => {
+  const Launches = ({ launches }) => {
 
   const formatData = (launcgesDate: string) : string => {
     const date = new Date(launcgesDate).toLocaleString();
@@ -80,25 +95,26 @@ const Patch = styled(Image)`
       }
   }
 
-  if (!launches) return <h1>Loading...</h1>
-
-  return (
-    <div> 
-        <h1>Lists</h1>
+  if (!launches) return <h1> Loading... </h1>
+  else return (
+    <Main>
         <ul>
         {
             launches.map(launch => {
                 const { name, details, success, date_utc, links: { patch: { small: img } } } = launch;
                 return (
                 <Launch key={name}>
-                    {/* {img && <Patch src={img} alt={name} layout='fill'/>} */}
+                    {/* {img && <Patch src={img} alt={name} height={300} width={300}/>} */}
+
+                  <Patch url={img} />
+                    
                     <TextContent>
                         <Link href={`/launches/${name}`}>
                             <Name>{name}</Name>
                         </Link>
                         <LaunchDate>Date: {formatData(date_utc)}</LaunchDate>
-                        <Success success={success}>{checkLaunchStatus(success, date_utc)}</Success>
-                        <Description>Mission description: {details || 'This is haven`t some information'} </Description>
+                        <Status success={success}>{checkLaunchStatus(success, date_utc)}</Status>
+                        <Description>{details || 'This is haven`t some information'} </Description>
                        
                     </TextContent>
                 </Launch>
@@ -107,17 +123,8 @@ const Patch = styled(Image)`
             })
         }
         </ul>
-    </div>
+        </Main>
   )
 }
 
 export default Launches;
-
-export async function getStaticProps() {
-  const response = await fetch(GET_ALL_LAUNCHES)
-  const launches = await response.json()
-
-  return {
-      props: {launches},
-  }
-}
