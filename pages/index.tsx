@@ -26,9 +26,10 @@ body {
   }
 `;
 
-const GET_ALL_LAUNCHES = 'https://api.spacexdata.com/v4/launches';
+const GET_ALL_LAUNCHES = 'https://api.spacexdata.com/v4/launches/query';
 
  const App = ({ launches }) => {
+   console.log(launches)
   return (
     <Fragment>
       <GlobalStyle />
@@ -41,7 +42,25 @@ const GET_ALL_LAUNCHES = 'https://api.spacexdata.com/v4/launches';
 export default App;
 
 export async function getStaticProps() {
-  const response = await fetch(GET_ALL_LAUNCHES)
+
+  // const optionsBody = 
+  //   {
+  //     options: {
+  //       select: 'name details',
+  //       limit: 2,
+  //       page: 10
+  //     },
+  // };
+
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8'
+    },
+    // body: JSON.stringify(optionsBody)
+  };
+
+  const response = await fetch(GET_ALL_LAUNCHES, requestOptions)
   const launches = await response.json()
 
   return {
