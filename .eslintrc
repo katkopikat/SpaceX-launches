@@ -1,0 +1,12 @@
+{
+  "extends": ["next", "next/core-web-vitals", "prettier"],
+  "rules": {
+    "jsx-quotes": [
+      1,
+      "prefer-double"
+    ]
+  },
+  "plugins": [
+    "prettier"
+  ]
+}
