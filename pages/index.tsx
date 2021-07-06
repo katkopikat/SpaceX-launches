@@ -17,6 +17,17 @@ export async function getStaticProps() {
     headers: {
       "Content-Type": "application/json;charset=utf-8",
     },
+    body: JSON.stringify({
+      options: {
+        select: [
+              'id',
+              'name',
+              'details',
+              'success',
+              'date_utc',
+              'links']
+      }
+    }),
   };
 
   const response = await fetch(URL_LAUNCHES, requestOptions);

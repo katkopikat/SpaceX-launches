@@ -18,7 +18,6 @@ type TStatus = {
 const Launch = ({ launch }: { launch: ILaunch }) => {
     const { name, details, success, date, img, id } = launch;
 
-
     const formatData = (launcgesDate: string): string => {
         const date = new Date(launcgesDate).toLocaleString();
         return date.substr(0, date.length - 3); // cropp seconds
@@ -66,22 +65,21 @@ export default Launch;
 
 const PatchImage = styled.div`
     position: absolute;
-    right: 150px;
+    right: 7rem;
     transform: scale(1.7) translate(0, 20%);
-    opacity: 0.2;
-    right: 150px;
-    width: 300px;
-    height: 300px;
+    width: 17rem;
+    height: 17rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0.15;
 `;
 
 const LaunchWrapper = styled.li`
     position:relative;
     width: 100%;
 	display: flex;
-    min-height: 300px;
+    min-height: 17rem;
 	margin-left: 3rem;
 	margin-bottom: 4rem;
 	background-color: #101010;
@@ -117,6 +115,7 @@ const Name = styled.h2`
 `;
 
 const Description = styled.p`
+    z-index: 2;
     font-size: 1rem;
     line-height: 1.5rem;
     color: #b9b9b9;
@@ -142,6 +141,7 @@ const MoreButton = styled.button`
     border: none;
     background: none;
     color: rgb(53 141 255 / 95%);
+    font-size: 1rem;
     letter-spacing: 0.2rem;
     text-transform: lowercase;
     opacity: 0.8;

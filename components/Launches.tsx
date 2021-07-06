@@ -6,10 +6,47 @@ import Launch from "./Launch";
 const URL_LAUNCHES: string = 'https://api.spacexdata.com/v4/launches/query';
 
 const Launches = ({ launches }) => {
+  console.log(launches)
   const [allLoadedLaunches, setLoadedLaunches] = useState(launches.docs);
   const [currentLaunches, setCurrentLaunches] = useState(launches);
 
+  const getLaunchesbyFilter = async (upcoming: boolean) => {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify({
+        query: {
+            upcoming: upcoming
+        },
+        options: {
+          select: [
+                'id',
+                'name',
+                'details',
+                'success',
+                'date_utc',
+                'links']
+        }
+      }),
+    };
+
+    const response = await fetch(URL_LAUNCHES, requestOptions);
+    const launches = await response.json();
+    console.log(launches)
+    setCurrentLaunches(launches);
+    setLoadedLaunches([...launches.docs]);
+  }
+
   const getMoreLaunches = async (url: string) => {
+
+    // body: JSON.stringify({
+    //   query: {
+    //     upcoming: true,
+    //   },
+    // }),
+
     const requestOptions = {
       method: "POST",
       headers: {
@@ -43,6 +80,11 @@ const Launches = ({ launches }) => {
             </ EndMessage>
           }
         >
+          <p>Total launches: {launches.totalDocs}</p>
+
+          <button onClick={()=> getLaunchesbyFilter(false) }>Past</button>
+          <button onClick={()=> getLaunchesbyFilter(true) }>Future</button>
+
           <LaunchesList>
             {allLoadedLaunches.map((launch) => {
               const {
@@ -71,9 +113,12 @@ const Scroll = styled(InfiniteScroll)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 90vw;
+  margin: 0 auto;
 `
 
 const LaunchesList = styled.ul`
+  width: 100%; 
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -1,11 +1,11 @@
 import Head from "next/head";
 import Header from './Header';
 import Footer from './Footer';
-import GlobalStyle from "../styles/global";
 import styled from "styled-components";
 
 const Main = styled.main`
 	margin: 0 auto;
+    width: 90vw;
 `;
 
 const MainLayout = ({children, title = "SpaceX | Launches"}) => {
@@ -17,6 +17,7 @@ const MainLayout = ({children, title = "SpaceX | Launches"}) => {
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
           <meta property="og:title" content="SpaceX | Launches" />
           <meta name="description" content="This is an application that shows a list of all SpaceX launches." />
+          <meta name="keywords" content="space, spaceX, universe, Mars, Ilon Mask, planet, launche. sciense" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Header />
@@ -24,7 +25,6 @@ const MainLayout = ({children, title = "SpaceX | Launches"}) => {
             {children}
         </Main>
         <Footer />
-        <GlobalStyle />
     </>
     );
 };
