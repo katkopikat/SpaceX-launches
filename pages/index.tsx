@@ -1,46 +1,34 @@
 import MainLayout from "../components/MainLayout";
 import Launches from "../components/Launches";
-
-const URL_LAUNCHES = "https://api.spacexdata.com/v4/launches/query";
+import { URL_LAUNCHES, SELECT_FIELDS } from "../constants";
 
 const App = ({ launches }) => {
-
-
-     return (
-      <MainLayout>
-        <Launches launches={launches}/>
-      </ MainLayout>
-     )
-}
+	return (
+		<MainLayout>
+			<Launches launches={launches} />
+		</MainLayout>
+	);
+};
 
 export default App;
 
 export async function getStaticProps() {
-  const requestOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-    },
-    body: JSON.stringify({
-      options: {
-        select: [
-              'id',
-              'name',
-              'details',
-              'success',
-              'date_utc',
-              'links',
-              'upcoming'
-          ]
-      }
-    }),
-  };
+	const options = {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json;charset=utf-8",
+		},
+		body: JSON.stringify({
+			options: {
+				select: SELECT_FIELDS,
+			},
+		}),
+	};
 
-  const response = await fetch(URL_LAUNCHES, requestOptions);
-  const launches = await response.json();
+	const response = await fetch(URL_LAUNCHES, options);
+	const launches = await response.json();
 
-  return {
-    props: { launches },
-  };
+	return {
+		props: { launches },
+	};
 }
-
