@@ -9,27 +9,27 @@ interface ILaunch {
     date: string;
     img: string;
     id: string;
+    upcoming: boolean;
 }
 
 type TStatus = {
+    upcoming: boolean;
     success: boolean
 }
 
 const Launch = ({ launch }: { launch: ILaunch }) => {
-    const { name, details, success, date, img, id } = launch;
+    const { name, details, success, date, img, id, upcoming } = launch;
 
     const formatData = (launcgesDate: string): string => {
         const date = new Date(launcgesDate).toLocaleString();
         return date.substr(0, date.length - 3); // cropp seconds
     };
 
-    const checkLaunchStatus = (status: boolean, date: string): string => {
-        const today = new Date();
-        const launchDate = new Date(date);
-        if (launchDate <= today) {
-            return status ? "success" : "fail";
+    const checkLaunchStatus = (status: boolean, upcoming: boolean, date: string): string => {
+        if (upcoming) {
+            return `Planning on ${date.toLocaleString()}`;
         } else {
-            return `Planning on ${launchDate.toLocaleString()}`;
+            return status ? "success" : "fail";
         }
     };
 
@@ -46,8 +46,8 @@ const Launch = ({ launch }: { launch: ILaunch }) => {
                     <LaunchDate>
                         Launch date: {formatData(date)}
                     </LaunchDate>
-                    <Status success={success}>
-                        {checkLaunchStatus(success, date)}
+                    <Status success={success} upcoming={upcoming}>
+                        {checkLaunchStatus(success, upcoming, date)}
                     </Status>
                     <Description>
                         {details || "This is haven`t some information"}{" "}
@@ -80,7 +80,7 @@ const LaunchWrapper = styled.li`
     width: 100%;
 	display: flex;
     min-height: 17rem;
-	margin-left: 3rem;
+	// margin-left: 3rem;
 	margin-bottom: 4rem;
 	background-color: #101010;
 	border-top: #1c1a1a 1px solid;
@@ -132,15 +132,15 @@ const Status = styled.span<TStatus>`
     font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: 0.1rem;
-    color: ${props => (props.success ? "#1db262" : "#d31647")};
-    border: ${props => (props.success ? "#1db262" : "#d31647")} 2px solid; 
+    color: ${props => (props.upcoming ? '#308aff' : (props.success ? "#1db262" : "#d31647"))};
+    border: ${props => (props.upcoming ? '#308aff' : (props.success ? "#1db262" : "#d31647"))} 2px solid; 
 `;
 
 const MoreButton = styled.button`
     margin-top: 1rem;
     border: none;
     background: none;
-    color: rgb(53 141 255 / 95%);
+    color: #308aff;
     font-size: 1rem;
     letter-spacing: 0.2rem;
     text-transform: lowercase;

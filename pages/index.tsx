@@ -3,11 +3,15 @@ import Launches from "../components/Launches";
 
 const URL_LAUNCHES = "https://api.spacexdata.com/v4/launches/query";
 
-const App = ({ launches }) => (
+const App = ({ launches }) => {
+
+
+     return (
       <MainLayout>
-        <Launches launches={launches} />
+        <Launches launches={launches}/>
       </ MainLayout>
-)
+     )
+}
 
 export default App;
 
@@ -25,7 +29,9 @@ export async function getStaticProps() {
               'details',
               'success',
               'date_utc',
-              'links']
+              'links',
+              'upcoming'
+          ]
       }
     }),
   };

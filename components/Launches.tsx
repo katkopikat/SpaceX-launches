@@ -1,77 +1,83 @@
 import styled from "styled-components";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Launch from "./Launch";
+import FilterButtons from "../components/FilterButtons";
 
 const URL_LAUNCHES: string = 'https://api.spacexdata.com/v4/launches/query';
 
+interface ILaunch {
+  name: string;
+  details: string | null;
+  success: boolean | null;
+  date_utc: string;
+  links: any; // TODO
+  id: string;
+  upcoming: boolean;
+}
+
+// enum LaunchesType {
+//   ALL = 'all',
+//   PAST = 'past',
+//   UPCOMING = 'upcoming'
+// }
+
+const SELECT_DATA = [
+  'id',
+  'name',
+  'details',
+  'success',
+  'date_utc',
+  'links',
+  'upcoming'
+];
+
 const Launches = ({ launches }) => {
-  console.log(launches)
-  const [allLoadedLaunches, setLoadedLaunches] = useState(launches.docs);
+  const [launchesType, setType] = useState('all');
+  const [allLoadedLaunches, setLoadedLaunches] = useState<ILaunch[]>(launches.docs);
   const [currentLaunches, setCurrentLaunches] = useState(launches);
+  const [page, setPage] = useState(1);
 
-  const getLaunchesbyFilter = async (upcoming: boolean) => {
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-      },
-      body: JSON.stringify({
-        query: {
-            upcoming: upcoming
-        },
-        options: {
-          select: [
-                'id',
-                'name',
-                'details',
-                'success',
-                'date_utc',
-                'links']
-        }
-      }),
-    };
-
-    const response = await fetch(URL_LAUNCHES, requestOptions);
-    const launches = await response.json();
-    console.log(launches)
-    setCurrentLaunches(launches);
-    setLoadedLaunches([...launches.docs]);
+  const setLaunchesType = (type: string) => {
+    setPage(0); 
+    setType(type);
+    setLoadedLaunches( allLoadedLaunches => allLoadedLaunches.splice(0, allLoadedLaunches.length));
+    getLaunches(URL_LAUNCHES, type, 0)
   }
 
-  const getMoreLaunches = async (url: string) => {
-
-    // body: JSON.stringify({
-    //   query: {
-    //     upcoming: true,
-    //   },
-    // }),
-
+  const getLaunches = async (url: string, type: string, page) => {
     const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
       },
       body: JSON.stringify({
+        query: type === 'all'
+                          ? {}
+                          : type == 'upcoming' ?  { upcoming: true }  : { upcoming : false },
         options: {
-          page: currentLaunches.nextPage,
+          page: page + 1,
+          select: SELECT_DATA 
         },
       }),
     };
 
     const response = await fetch(url, requestOptions);
-
     const launches = await response.json();
+
+    console.log(launches)
     setCurrentLaunches(launches);
+    setPage(launches.page)
     setLoadedLaunches([...allLoadedLaunches, ...launches.docs]);
   };
 
   if (!launches.docs) return <Loader> Loading... </ Loader>;
+
   else
     return (
         <Scroll
           dataLength={allLoadedLaunches.length}
-          next={() => getMoreLaunches(URL_LAUNCHES)}
+          next={() => getLaunches(URL_LAUNCHES, launchesType, page)}
           hasMore={currentLaunches.hasNextPage}
           loader={<Loader>Loading...</Loader>}
           endMessage={
@@ -80,25 +86,26 @@ const Launches = ({ launches }) => {
             </ EndMessage>
           }
         >
-          <p>Total launches: {launches.totalDocs}</p>
 
-          <button onClick={()=> getLaunchesbyFilter(false) }>Past</button>
-          <button onClick={()=> getLaunchesbyFilter(true) }>Future</button>
-
+          <ButtonsWrapper>
+            <p>Result: {currentLaunches.totalDocs}</p>
+            <FilterButtons setLaunchesType={setLaunchesType} />
+          </ButtonsWrapper>
           <LaunchesList>
-            {allLoadedLaunches.map((launch) => {
+            {allLoadedLaunches.map((launch: ILaunch) => {
               const {
                 id,
                 name,
                 details,
                 success,
+                upcoming,
                 date_utc: date,
                 links: {
                   patch: { small: img },
                 },
               } = launch;
               return (
-                <Launch key={name} launch={{ name, details, success, date, img, id }} />
+                <Launch key={name} launch={{ name, details, success, date, img, id, upcoming }} />
               );
             })}
           </LaunchesList>
@@ -112,9 +119,8 @@ const Scroll = styled(InfiniteScroll)`
   margin-top: 3rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   width: 90vw;
-  margin: 0 auto;
 `
 
 const LaunchesList = styled.ul`
@@ -135,3 +141,17 @@ const Loader = styled.p`
   color: #777777;
   text-align: center;
 `
+
+const ButtonsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 2rem 0;
+  
+  p {
+    font-size: 1rem;
+    color: rgb(144 144 144 / 85%);
+    margin-bottom: 1rem;
+    letter-spacing: 0.1rem;
+    text-transform: uppercase;
+  }
+  `;
